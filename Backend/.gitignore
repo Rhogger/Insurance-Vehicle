@@ -1,0 +1,7 @@
+# Pastas
+bin/
+obj/
+
+# Itens de Configurações
+appsettings.Development.json
+backend.http
