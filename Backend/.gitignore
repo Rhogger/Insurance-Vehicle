@@ -1,6 +1,7 @@
 # Pastas
 bin/
 obj/
+Properties/
 
 # Itens de Configurações
 appsettings.Development.json
