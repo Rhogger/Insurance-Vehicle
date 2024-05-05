@@ -3,9 +3,9 @@ using Backend.Models;
 
 public abstract class DataLoadBase : IDataLoad
 {
-  public List<PersonBase> GetDataset()
+  public List<PersonBase> GetDataset(IEnumerable<string> csvData)
   {
-    return Load<PersonBase>("Car_Insurance_Claim");
+    return Load<PersonBase>(csvData);
   }
-  public abstract List<T> Load<T>(string local);
+  public abstract List<T> Load<T>(IEnumerable<string> csvData);
 }

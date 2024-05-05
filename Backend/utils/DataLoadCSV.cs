@@ -1,3 +1,4 @@
+using Backend.Models;
 using CsvHelper;
 using CsvHelper.Configuration;
 using System.Globalization;
@@ -5,17 +6,13 @@ using System.Globalization;
 namespace Backend.Utils.DataLoad;
 public class DataLoadCSV : DataLoadBase
 {
-  public override List<T> Load<T>(string local)
+  public override List<PersonBase> Load<PersonBase>(IEnumerable<string> csvData)
   {
-    local = local + ".csv";
-    if (!File.Exists(local))
-      throw new ArgumentException(local);
-
     var config = new CsvConfiguration(CultureInfo.InvariantCulture);
-    using (var reader = new StreamReader(local))
+    using (var reader = new StringReader(string.Join(Environment.NewLine, csvData)))
     using (var csv = new CsvReader(reader, config))
     {
-      return csv.GetRecords<T>().ToList();
+      return csv.GetRecords<PersonBase>().ToList();
     }
   }
 }

@@ -1,8 +1,6 @@
-using System.Globalization;
 using Backend.Enums;
 using Backend.Interfaces;
 using Backend.Models;
-using CsvHelper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -24,13 +22,13 @@ public class PersonController : ControllerBase
     }
 
     [HttpGet(Name = "GetCsvData")]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public async Task<IEnumerable<string>> GetCsvData()
     {
-        // Tente recuperar o CSV do cache
         string csvContent;
+
         if (!_cache.TryGetValue(CsvCacheKey, out csvContent))
         {
-            // Se o CSV não estiver em cache, faça a solicitação para a URL e obtenha o conteúdo do CSV
             using (var httpClient = new HttpClient())
             {
                 try
@@ -40,49 +38,34 @@ public class PersonController : ControllerBase
                     {
                         csvContent = await response.Content.ReadAsStringAsync();
 
-                        // Armazene o CSV no cache com um tempo de vida (TTL)
                         _cache.Set(CsvCacheKey, csvContent, new MemoryCacheEntryOptions
                         {
-                            AbsoluteExpiration = DateTimeOffset.UtcNow.AddMinutes(20) // Expira em 20 minutos
+                            AbsoluteExpiration = DateTimeOffset.UtcNow.AddMinutes(20)
                         });
                     }
                     else
                     {
-                        // Se não foi possível obter o conteúdo do CSV, lance uma exceção ou retorne uma coleção vazia, dependendo do seu requisito
-                        throw new Exception("Falha ao obter o conteúdo do CSV.");
+                        throw new Exception("Failed to get CSV content.");
                     }
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Erro ao acessar a URL do CSV.");
-                    // Se houve um erro ao acessar a URL do CSV, lance uma exceção ou retorne uma coleção vazia, dependendo do seu requisito
+                    _logger.LogError(ex, "Error accessing CSV URL.");
                     throw;
                 }
             }
         }
 
-        // Separe o conteúdo do CSV em linhas e retorne como uma coleção de strings
         var csvLines = csvContent.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
         return csvLines;
     }
 
-
     [HttpGet(Name = "Buscar o Score")]
     public async Task<IActionResult> GetScore(int age, Gender gender, int drivingExperience, Education education, Income income, int vehicleYear, VehicleType vehicleType, float annualMileage)
     {
-        // Busca o conteúdo do CSV
         IEnumerable<string> csvData = await GetCsvData();
 
-        // Inicialize uma lista para armazenar os dados do CSV
-        List<PersonBase> dataset = new List<PersonBase>();
-
-        // Use o CsvReader para processar o conteúdo do CSV
-        using (var reader = new StringReader(string.Join(Environment.NewLine, csvData)))
-        using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
-        {
-            // Leia os registros do CSV e adicione-os à lista dataset
-            dataset = csv.GetRecords<PersonBase>().ToList();
-        }
+        List<PersonBase> dataset = _dataLoad.GetDataset(csvData);
 
         Person person = new Person(age, gender, drivingExperience, education, income, vehicleYear, vehicleType, annualMileage);
 

@@ -4,7 +4,7 @@ namespace Backend.Interfaces;
 
 public interface IDataLoad
 {
-  List<PersonBase> GetDataset();
+  List<PersonBase> GetDataset(IEnumerable<string> csvData);
 
-  List<T> Load<T>(string local);
+  List<PersonBase> Load<PersonBase>(IEnumerable<string> csvData);
 }
