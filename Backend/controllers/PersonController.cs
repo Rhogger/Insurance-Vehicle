@@ -63,11 +63,11 @@ public class PersonController : ControllerBase
     [HttpGet(Name = "Buscar o Score")]
     public async Task<IActionResult> GetScore(int age, Gender gender, int drivingExperience, Education education, Income income, int vehicleYear, VehicleType vehicleType, float annualMileage)
     {
+        Person person = new Person(age, gender, drivingExperience, education, income, vehicleYear, vehicleType, annualMileage);
+
         IEnumerable<string> csvData = await GetCsvData();
 
         List<PersonBase> dataset = _dataLoad.GetDataset(csvData);
-
-        Person person = new Person(age, gender, drivingExperience, education, income, vehicleYear, vehicleType, annualMileage);
 
         var _age = person.SetAgeInterval();
         var _gender = person.ConvertGenderEnum();
