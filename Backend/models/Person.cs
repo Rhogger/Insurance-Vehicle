@@ -24,19 +24,37 @@ public class Person
 
   public Person(int age, Gender gender, int drivingExperience, Education education, Income income, int vehicleYear, VehicleType vehicleType, float annualMileage)
   {
+    if (age < 0) throw new Exception("Invalid age.");
     this.age = age;
+
+    if (gender == null) throw new ArgumentNullException(nameof(gender), "Gender can't be null.");
+    if (gender != Gender.female && gender != Gender.male) throw new Exception("Invalid gender.");
     this.gender = gender;
+
+    if (drivingExperience < 0) throw new Exception("Invalid driving experience.");
     this.drivingExperience = drivingExperience;
+
+    if (education == null) throw new ArgumentNullException(nameof(education), "Education can't be null.");
+    if (education != Education.none && education != Education.university && education != Education.high_school) throw new Exception("Invalid education type.");
     this.education = education;
+
+    if (income == null) throw new ArgumentNullException(nameof(income), "Income can't be null.");
+    if (income != Income.poverty && income != Income.working_class && income != Income.upper_class && income != Income.middle_class) throw new Exception("Invalid income type.");
     this.income = income;
+
+    if (vehicleYear < 0) throw new Exception("Invalid year to vehicle.");
     this.vehicleYear = vehicleYear;
+
+    if (vehicleType == null) throw new ArgumentNullException(nameof(vehicleType), "Vehicle type can't be null.");
+    if (vehicleType != VehicleType.sedan && vehicleType != VehicleType.sports_car) throw new Exception("Invalid vehicle type.");
     this.vehicleType = vehicleType;
+
+    if (annualMileage < 0) throw new Exception("Invalid annual mileage.");
     this.annualMileage = annualMileage;
   }
 
   public string SetAgeInterval()
   {
-    if (age < 0) throw new Exception("Invalid age.");
     if (age < 17) throw new Exception("Age younger than expected.");
     if (age < 26) return "16-25";
     if (age < 40) return "26-39";
@@ -52,7 +70,6 @@ public class Person
 
   public string SetDrivingExperienceInterval()
   {
-    if (drivingExperience < 0) throw new Exception("Invalid driving experience.");
     if (drivingExperience < 10) return "0-9y";
     if (drivingExperience < 20) return "10-19y";
     if (drivingExperience < 30) return "20-29y";
@@ -76,7 +93,6 @@ public class Person
 
   public string SetVehicleYearToBeforeOrAfter()
   {
-    if (vehicleYear < 0) throw new Exception("Invalid year to vehicle.");
     if (vehicleYear > 2024) throw new Exception("Vehicle year greater than the current calendar year.");
     if (vehicleYear < 2015) return "before 2015";
     return "after 2015";
