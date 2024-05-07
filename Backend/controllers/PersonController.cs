@@ -13,7 +13,7 @@ public class PersonController : ControllerBase
     private readonly ILogger<PersonController> _logger;
     private readonly IDataLoad _dataLoad;
     private readonly IMemoryCache _cache;
-    private const string CsvCacheKey = "CsvData";
+    private const string csvCacheKey = "CsvData";
     public PersonController(ILogger<PersonController> logger, IDataLoad dataLoad, IMemoryCache cache)
     {
         _logger = logger;
@@ -27,7 +27,7 @@ public class PersonController : ControllerBase
     {
         string csvContent;
 
-        if (!_cache.TryGetValue(CsvCacheKey, out csvContent))
+        if (!_cache.TryGetValue(csvCacheKey, out csvContent))
         {
             using (var httpClient = new HttpClient())
             {
@@ -37,8 +37,8 @@ public class PersonController : ControllerBase
                     if (response.IsSuccessStatusCode)
                     {
                         csvContent = await response.Content.ReadAsStringAsync();
-
-                        _cache.Set(CsvCacheKey, csvContent, new MemoryCacheEntryOptions
+    
+                        _cache.Set(csvCacheKey, csvContent, new MemoryCacheEntryOptions
                         {
                             AbsoluteExpiration = DateTimeOffset.UtcNow.AddMinutes(20)
                         });

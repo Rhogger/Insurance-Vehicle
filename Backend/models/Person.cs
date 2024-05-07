@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using Backend.Enums;
 
 namespace Backend.Models;
@@ -112,6 +113,6 @@ public class Person
 
     var roundedThousands = Math.Round(roundedDecimals / 1000) * 1000;
 
-    return $"{roundedThousands:#.0}";
+    return string.Format(CultureInfo.InvariantCulture, "{0:#0.0}", roundedThousands);
   }
 }

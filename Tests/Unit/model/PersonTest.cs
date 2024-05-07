@@ -1,10 +1,8 @@
 using Backend.Enums;
 using Backend.Models;
-using Microsoft.Extensions.Logging;
 using Moq;
-using Xunit.Sdk;
 
-namespace unit;
+namespace Tests.Unit.Models;
 
 public class PersonTest
 {
@@ -16,7 +14,8 @@ public class PersonTest
     public void ConstructorAcceptsValidValues(int age, Gender gender, int drivingExperience, Education education, Income income, int vehicleYear, VehicleType vehicleType, float annualMileage)
     {
         // Act
-        var person = new Person(age, gender, drivingExperience, education, income, vehicleYear, vehicleType, annualMileage);
+        var mockPerson = new Mock<Person>(age, gender, drivingExperience, education, income, vehicleYear, vehicleType, annualMileage);
+        var person = mockPerson.Object;
 
         // Assert
         Assert.Equal(age, person.age);
@@ -231,7 +230,7 @@ public class PersonTest
 
     [Theory]
     [InlineData(500, "0.0")]
-    [InlineData(500.5, "0.0")]
+    [InlineData(500.5, "1000.0")]
     [InlineData(500.6, "1000.0")]
     [InlineData(501, "1000.0")]
     [InlineData(998, "1000.0")]
@@ -240,7 +239,7 @@ public class PersonTest
     [InlineData(1234, "1000.0")]
     [InlineData(1589, "2000.0")]
     [InlineData(12467, "12000.0")]
-    [InlineData(124678, "124000.0")]
+    [InlineData(124678, "125000.0")]
     public void RoundAnnualMileageReturnsCorrectRoundedNumber(float annualMileage, string expectedNumber)
     {
         // Arrange
